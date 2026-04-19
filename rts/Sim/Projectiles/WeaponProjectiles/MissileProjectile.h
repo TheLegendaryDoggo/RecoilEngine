@@ -59,6 +59,8 @@ private:
 	float3 wobbleDir;
 	float3 wobbleDif;
 
+	float3 salvoOffset; // persistent world-space lateral offset, applied to tracked-target position each tick
+
 	float3 oldSmoke;
 	float3 oldDir;
 	CSmokeTrailProjectile* smokeTrail;

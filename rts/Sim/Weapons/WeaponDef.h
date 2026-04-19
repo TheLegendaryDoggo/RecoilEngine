@@ -155,6 +155,7 @@ public:
 
 	float wobble;                    ///< how much the missile will wobble around its course
 	float dance;                     ///< how much the missile will dance
+	float salvoOffset;               ///< lateral offset per weapon slot, alternating sides
 	float trajectoryHeight;          ///< how high trajectory missiles will try to fly in
 
 	bool largeBeamLaser;             // whether a BeamLaser should spawn LargeBeamLaserProjectile's or regular ones

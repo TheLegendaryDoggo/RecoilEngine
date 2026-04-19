@@ -44,6 +44,7 @@ CR_REG_METADATA(CMissileProjectile,(
 	CR_MEMBER(extraHeight),
 	CR_MEMBER(extraHeightDecay),
 	CR_MEMBER(extraHeightTime),
+	CR_MEMBER(salvoOffset),
 	CR_IGNORED(smokeTrail)
 ))
 
@@ -80,6 +81,15 @@ CMissileProjectile::CMissileProjectile(const ProjectileParams& params): CWeaponP
 		maxSpeed = weaponDef->projectilespeed;
 		isDancing = (weaponDef->dance > 0);
 		isWobbling = (weaponDef->wobble > 0);
+
+		if (weaponDef->salvoOffset != 0.0f) {
+			float3 dir = (targetPos - pos);
+			float3 perp(-dir.z, 0.0f, dir.x);
+			perp.SafeNormalize();
+			const float sign = (params.weaponNum & 1u) ? -1.0f : 1.0f;
+			salvoOffset = perp * weaponDef->salvoOffset * sign;
+			targetPos += salvoOffset;
+		}
 
 		if (weaponDef->trajectoryHeight > 0.0f) {
 			const float dist = pos.distance(targetPos);
@@ -298,11 +308,12 @@ float3 CMissileProjectile::UpdateTargeting() {
 		}
 
 		targetPos.y = std::max(targetPos.y, targetPos.y * weaponDef->waterweapon);
+		targetPos += salvoOffset;
 		return targetVel;
 	}
 
 	// track regular target base-position
-	targetPos = target->pos;
+	targetPos = target->pos + salvoOffset;
 
 	if ((po = dynamic_cast<const CWeaponProjectile*>(target)) == nullptr)
 		return targetVel;
